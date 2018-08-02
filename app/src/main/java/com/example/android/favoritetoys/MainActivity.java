@@ -21,8 +21,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GreenAdapter.ListitemclickListener {
 
     private static final int NUM_LIST_ITEMS = 100;
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private GreenAdapter mAdapter;
     private RecyclerView mNumbersList;
 
+    private Toast mToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mNumbersList.setLayoutManager(layoutManager);
         mNumbersList.setHasFixedSize(true);
-        mAdapter = new GreenAdapter(NUM_LIST_ITEMS);
+
+        mAdapter = new GreenAdapter(NUM_LIST_ITEMS, this);
 
         mNumbersList.setAdapter(mAdapter);
     }
@@ -58,9 +62,21 @@ public class MainActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         switch (itemId){
             case R.id.action_refresh:
-                mAdapter = new GreenAdapter(NUM_LIST_ITEMS);mNumbersList.setAdapter(mAdapter);
+                mAdapter = new GreenAdapter(NUM_LIST_ITEMS, this);
+                mNumbersList.setAdapter(mAdapter);
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListItemClick(int clickeditemIndex) {
+        if(mToast != null){
+            mToast.cancel();
+        }
+
+        String toastMessage = "Item #" + clickeditemIndex + " clicked";
+        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT);
+        mToast.show();
     }
 }
